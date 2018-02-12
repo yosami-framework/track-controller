@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Controller for track.",
   "main": "lib/index.js",
-  "repository": "alfa-jpn/track-component.git",
+  "repository": "alfa-jpn/track-controller.git",
   "scripts": {
     "linter": "eslint ./",
     "test": "ospec"
