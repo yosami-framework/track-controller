@@ -23,7 +23,22 @@ class HogeController extends TrackController {
   }
 
   oninit() {
-    super.oninit(); // Must call when Override lifecycle methods of Mithril.
+    super.oninit(); // Must call when Override lifecycle methods.
   }
+}
+```
+
+## Lifecycle methods
+
+Must call super method When override lifecycle method.
+
+### onparamschange
+
+The `onparamschanged()` hooks is called after change controller params.
+
+```javascript
+// When change `?hoge='aaa'` `?hoge='bbb'`
+onparamschanged(newly, older) {
+  // call  
 }
 ```
