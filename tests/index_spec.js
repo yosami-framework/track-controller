@@ -1,7 +1,7 @@
 require('./spec_helper');
-const m                = require('mithril');
 const deepMerge        = require('deepmerge');
 const t                = require('track-spec');
+const TrackConfig      = require('track-config');
 const TrackModel       = require('track-model');
 const TrackView        = require('track-view');
 const TrackController  = require('../lib/index');
@@ -85,7 +85,7 @@ t.describe('TrackController', () => {
 
     t.beforeEach(() => {
       mockParams = {};
-      m.route.param = t.spy(() => mockParams);
+      TrackConfig.m.route.param = t.spy(() => mockParams);
     });
 
     t.context('When use browser', () => {
