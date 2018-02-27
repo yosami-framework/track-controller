@@ -4,6 +4,7 @@ const t                = require('track-spec');
 const TrackConfig      = require('track-config');
 const TrackModel       = require('track-model');
 const TrackView        = require('track-view');
+const ScrollHelper     = require('track-helpers/lib/scroll_helper');
 const TrackController  = require('../lib/index');
 const ControllerState  = require('../lib/state');
 const ControllerConfig = require('../lib/config');
@@ -264,13 +265,24 @@ t.describe('TrackController', () => {
       t.context('When has cache', () => {
         t.beforeEach(() => {
           BrowserCache.instance.get = t.spy(() => {
-            return {hoge: 'fuga'};
+            return {
+              viewmodel: {hoge: 'fuga'},
+              position:  {x: 100, y: 200},
+            };
           });
         });
 
         t.it('Load from cache', () => {
           return subject().then(() => {
             t.expect(mockController.viewmodel.hoge).equals('fuga');
+          });
+        });
+
+        t.it('Scroll from cache', () => {
+          ScrollHelper.scroll = t.spy(() => Promise.resolve());
+          return subject().then(() => {
+            t.expect(ScrollHelper.scroll.callCount).equals(1);
+            t.expect(ScrollHelper.scroll.args[0]).deepEquals({x: 100, y: 200});
           });
         });
 
