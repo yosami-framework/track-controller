@@ -1,6 +1,6 @@
 {
   "name": "track-controller",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Controller for track.",
   "main": "lib/index.js",
   "repository": "alfa-jpn/track-controller.git",
@@ -17,7 +17,7 @@
     "md5": "^2.2.1",
     "track-component": "0.0.6",
     "track-config": "0.0.2",
-    "track-eventor": "0.0.4",
+    "track-eventor": "0.0.5",
     "track-helpers": "0.0.1"
   },
   "devDependencies": {
