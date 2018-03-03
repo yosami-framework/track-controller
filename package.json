@@ -1,6 +1,6 @@
 {
   "name": "track-controller",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Controller for track.",
   "main": "lib/index.js",
   "repository": "alfa-jpn/track-controller.git",
