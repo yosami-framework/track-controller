@@ -235,6 +235,14 @@ t.describe('TrackController', () => {
       });
     });
 
+    t.it('Scroll to top', () => {
+      ScrollHelper.scroll = t.spy(() => Promise.resolve());
+      return subject().then(() => {
+        t.expect(ScrollHelper.scroll.callCount).equals(1);
+        t.expect(ScrollHelper.scroll.args[0]).deepEquals({x: 0, y: 0});
+      });
+    });
+
     t.context('When useCache is true', () => {
       t.beforeEach(() => {
         ControllerConfig.useCache = true;
