@@ -17,9 +17,9 @@ const TrackController = require('track-controller');
 
 class HogeController extends TrackController {
   static definer() {
-    name('hoge');                            // Define model name. **Required**
-    views(require('./views/hoge'));          // Append view.
-    viewmodel(require('./viewmodels/hoge')); // Set viewmodel.
+    name('hoge');               // Define model name. **Required**
+    views(require('hoge'));     // Append view. `views/hoge.js`
+    viewmodel(require('hoge')); // Set viewmodel. `view_models/hoge.js`
   }
 
   oninit() {
