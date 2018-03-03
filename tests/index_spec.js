@@ -2,8 +2,6 @@ require('./spec_helper');
 const deepMerge        = require('deepmerge');
 const t                = require('track-spec');
 const TrackConfig      = require('track-config');
-const TrackModel       = require('track-model');
-const TrackView        = require('track-view');
 const ScrollHelper     = require('track-helpers/lib/scroll_helper');
 const TrackController  = require('../lib/index');
 const ControllerState  = require('../lib/state');
@@ -29,26 +27,6 @@ t.describe('TrackController', () => {
         },
       },
     };
-    mockViewClass = (class extends TrackView {
-      /**
-       * Render view.
-       * @param {object} _yield object.
-       * @return {array} mock
-       */
-      render(_yield) {
-        return [_yield];
-      }
-    });
-
-    mockViewModelClass = (class extends TrackModel {
-      /**
-       * Definitions of viewmodel.
-       */
-      static definer() {
-        name('mock_viewmodel');
-        accessor('hoge');
-      }
-    });
 
     mockController = new (class extends TrackController {
       /**
@@ -56,8 +34,8 @@ t.describe('TrackController', () => {
        */
       static definer() {
         name('mock_controller');
-        views(this.mockViewClass);
-        viewmodel(this.mockViewModelClass);
+        views('mock');
+        viewmodel('mock');
       }
 
       /**

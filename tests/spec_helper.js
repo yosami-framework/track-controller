@@ -9,4 +9,5 @@ global.requestAnimationFrame = function(func) {
 
 TrackConfig.configure((c) => {
   c.m = require('mithril');
+  c.loader = ((module) => require(`./fixtures/${module}`));
 });
