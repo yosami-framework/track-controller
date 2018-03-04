@@ -9,10 +9,9 @@ const ControllerConfig = require('../lib/config');
 const BrowserCache     = require('../lib/browser_cache');
 
 t.describe('TrackController', () => {
-  let mockController     = null;
-  let mockVnode          = null;
-  let mockViewClass      = null;
-  let mockViewModelClass = null;
+  let MockControllerClass = null;
+  let mockController      = null;
+  let mockVnode           = null;
 
   t.beforeEach(() => {
     mockVnode = {
@@ -28,7 +27,7 @@ t.describe('TrackController', () => {
       },
     };
 
-    mockController = new (class extends TrackController {
+    MockControllerClass = (class extends TrackController {
       /**
        * Definitions of model.
        */
@@ -37,25 +36,33 @@ t.describe('TrackController', () => {
         views('mock');
         viewmodel('mock');
       }
-
-      /**
-       * Return mockViewlClass
-       */
-      get mockViewClass() {
-        return mockViewClass;
-      }
-
-      /**
-       * Return mock class.
-       */
-      get mockViewModelClass() {
-        return mockViewModelClass;
-      }
-    })(mockVnode);
+    });
+    mockController = new MockControllerClass(mockVnode);
   });
 
   t.afterEach(() => {
     process.browser = false;
+  });
+
+  t.describe('.onmatch', () => {
+    const subject = (() => MockControllerClass.onmatch());
+
+    t.it('Return controller', () => {
+      t.expect(subject()).equals(MockControllerClass);
+    });
+  });
+
+  t.describe('.render', () => {
+    const subject = (() => MockControllerClass.render(mockVnode));
+    let mockVnode = null;
+
+    t.beforeEach(() => {
+      mockVnode = {};
+    });
+
+    t.it('Return vnode', () => {
+      t.expect(subject()).equals(mockVnode);
+    });
   });
 
   t.describe('#params', () => {
