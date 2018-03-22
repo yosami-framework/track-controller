@@ -1,6 +1,6 @@
 {
   "name": "track-controller",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Controller for track.",
   "main": "lib/index.js",
   "repository": "alfa-jpn/track-controller.git",
@@ -20,7 +20,7 @@
     "eslint": "^4.17.0",
     "eslint-config-google": "^0.9.1",
     "mithril": "^1.1.6",
-    "track-component": "0.0.7",
+    "track-component": "0.0.8",
     "track-config": "0.0.3",
     "track-dsl": "0.0.3",
     "track-eventor": "0.0.5",
