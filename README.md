@@ -17,9 +17,8 @@ const TrackController = require('track-controller');
 
 class HogeController extends TrackController {
   static definer() {
-    name('hoge');               // Define model name. **Required**
-    views(require('hoge'));     // Append view. `views/hoge.js`
-    viewmodel(require('hoge')); // Set viewmodel. `view_models/hoge.js`
+    name('hoge');  // Define model name. **Required**
+    views('hoge'); // Append view. `views/hoge.js`
   }
 
   oninit() {
@@ -37,7 +36,7 @@ Must call super method When override lifecycle method.
 The `onparamschanged()` hooks is called after change controller params.
 
 ```javascript
-// When change `?hoge='aaa'` `?hoge='bbb'`
+// When change from `?hoge='aaa'` to `?hoge='bbb'`
 onparamschanged(newly, older) {
   // call  
 }

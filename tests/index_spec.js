@@ -32,9 +32,8 @@ t.describe('TrackController', () => {
        * Definitions of model.
        */
       static definer() {
-        name('mock_controller');
+        name('mock');
         views('mock');
-        viewmodel('mock');
       }
     });
     mockController = new MockControllerClass(mockVnode);
@@ -62,6 +61,14 @@ t.describe('TrackController', () => {
 
     t.it('Return vnode', () => {
       t.expect(subject()).equals(mockVnode);
+    });
+  });
+
+  t.describe('#type', () => {
+    const subject = (() => mockController.type);
+
+    t.it('Return type', () => {
+      t.expect(subject()).equals('controller');
     });
   });
 
@@ -107,7 +114,7 @@ t.describe('TrackController', () => {
     });
 
     t.it('Return key', () => {
-      t.expect(subject()).equals('mock_controller::Cache::028edbcdb0fcb5cdaf8d99814ae5a17e');
+      t.expect(subject()).equals('Controllers::mock::028edbcdb0fcb5cdaf8d99814ae5a17e');
     });
 
     t.context('When location.search is empty', () => {
@@ -116,7 +123,7 @@ t.describe('TrackController', () => {
       });
 
       t.it('Return key', () => {
-        t.expect(subject()).equals('mock_controller::Cache::');
+        t.expect(subject()).equals('Controllers::mock::');
       });
     });
   });
