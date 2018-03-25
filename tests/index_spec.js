@@ -266,15 +266,15 @@ t.describe('TrackController', () => {
         t.beforeEach(() => {
           BrowserCache.instance.get = t.spy(() => {
             return {
-              viewmodel: {hoge: 'fuga'},
-              position:  {x: 100, y: 200},
+              vm:       {hoge: 'fuga'},
+              position: {x: 100, y: 200},
             };
           });
         });
 
         t.it('Load from cache', () => {
           return subject().then(() => {
-            t.expect(mockController.viewmodel.hoge).equals('fuga');
+            t.expect(mockController.vm.hoge).equals('fuga');
           });
         });
 

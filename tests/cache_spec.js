@@ -7,7 +7,7 @@ t.describe('Cache', () => {
 
   t.beforeEach(() => {
     mockState = new Cache({
-      viewmodel: {
+      vm: {
         hoge: 'fuga',
       },
       position: {
@@ -17,8 +17,8 @@ t.describe('Cache', () => {
     });
   });
 
-  t.describe('#viewmodel', () => {
-    const subject = (() => mockState.viewmodel);
+  t.describe('#vm', () => {
+    const subject = (() => mockState.vm);
 
     t.it('Return params', () => {
       t.expect(subject()).deepEquals({hoge: 'fuga'});
