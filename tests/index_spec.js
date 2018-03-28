@@ -33,7 +33,6 @@ t.describe('TrackController', () => {
        */
       static definer() {
         name('mock');
-        views('mock');
       }
     });
     mockController = new MockControllerClass(mockVnode);
@@ -98,6 +97,33 @@ t.describe('TrackController', () => {
 
       t.it('Return param', () => {
         t.expect(subject()).equals(mockVnode.attrs['X-SERVER-PARAMS']);
+      });
+    });
+  });
+
+  t.describe('#views', () => {
+    const subject = (() => mockController.views);
+
+    t.it('Return views', () => {
+      t.expect(subject().length).equals(2);
+    });
+
+    t.context('When definer includes `views`', () => {
+      t.beforeEach(() => {
+        MockControllerClass = (class extends TrackController {
+          /**
+           * Definitions of model.
+           */
+          static definer() {
+            name('mock');
+            views('mock');
+          }
+        });
+        mockController = new MockControllerClass(mockVnode);
+      });
+
+      t.it('Return views', () => {
+        t.expect(subject().length).equals(1);
       });
     });
   });
