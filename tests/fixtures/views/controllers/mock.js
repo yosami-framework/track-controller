@@ -1,3 +1,3 @@
-module.exports = function(controller, attrs, _yield) {
+module.exports = function(controller, pipe, _yield) {
   return 'mock';
 };

@@ -19,12 +19,10 @@ class HogeController extends TrackController {
   static definer() {
     name('hoge'); // Define model name. **Required**
   }
-
-  oninit() {
-    super.oninit(); // Must call when Override lifecycle methods.
-  }
 }
 ```
+
+Reference track-component.
 
 ## Lifecycle methods
 
