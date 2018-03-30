@@ -1,6 +1,6 @@
 {
   "name": "track-controller",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Controller for track.",
   "main": "lib/index.js",
   "repository": "alfa-jpn/track-controller.git",
@@ -13,8 +13,7 @@
   "dependencies": {
     "deepmerge": "^2.0.1",
     "fast-deep-equal": "^1.1.0",
-    "lscache": "^1.1.0",
-    "md5": "^2.2.1"
+    "lscache": "^1.1.0"
   },
   "devDependencies": {
     "eslint": "^4.17.0",
@@ -24,7 +23,7 @@
     "track-config": "0.0.3",
     "track-dsl": "0.0.3",
     "track-eventor": "0.0.5",
-    "track-helpers": "0.0.1",
+    "track-helpers": "0.0.2",
     "track-i18n": "0.0.2",
     "track-model": "0.0.5",
     "track-spec": "0.0.3"
