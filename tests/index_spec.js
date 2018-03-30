@@ -1,12 +1,9 @@
 require('./spec_helper');
-const deepMerge        = require('deepmerge');
-const m                = require('mithril');
-const t                = require('track-spec');
-const ScrollHelper     = require('track-helpers/lib/scroll_helper');
-const TrackController  = require('../lib/index');
-const ControllerState  = require('../lib/state');
-const ControllerConfig = require('../lib/config');
-const BrowserCache     = require('../lib/browser_cache');
+const m               = require('mithril');
+const t               = require('track-spec');
+const ScrollHelper    = require('track-helpers/lib/scroll_helper');
+const TrackController = require('../lib/index');
+const BrowserCache    = require('../lib/browser_cache');
 
 t.describe('TrackController', () => {
   let MockControllerClass = null;
@@ -40,6 +37,15 @@ t.describe('TrackController', () => {
 
   t.afterEach(() => {
     process.browser = false;
+  });
+
+  t.describe('.initialize', () => {
+    const subject = (() => TrackController.initialize({innerHTML: '<span>FUGA</span>'}));
+
+    t.it('Set TrackController._initialView', () => {
+      subject();
+      t.expect(TrackController._initialView).equals('<span>FUGA</span>');
+    });
   });
 
   t.describe('.onmatch', () => {
@@ -159,16 +165,7 @@ t.describe('TrackController', () => {
 
     t.beforeEach(() => {
       mockController._load = t.spy(() => Promise.resolve());
-    });
-
-    t.it('Set controller#state', () => {
-      subject();
-      t.expect(mockController.state instanceof ControllerState).equals(true);
-    });
-
-    t.it('Set controller#state.params', () => {
-      subject();
-      t.expect(mockController.state.params).deepEquals(mockVnode.attrs['X-SERVER-PARAMS']);
+      mockController._watchParams = t.spy();
     });
 
     t.it('Call controller#_load', () => {
@@ -176,8 +173,25 @@ t.describe('TrackController', () => {
       t.expect(mockController._load.callCount).equals(1);
     });
 
+    t.it('Call controller#_watchParams', () => {
+      subject();
+      t.expect(mockController._watchParams.callCount).equals(1);
+    });
+
     t.it('Return promise', () => {
       t.expect(subject() instanceof Promise).equals(true);
+    });
+
+    t.context('When loaded', () => {
+      t.beforeEach(() => {
+        TrackController._initialView = '<span>FUGA</span>';
+      });
+
+      t.it('Clear TrackController._initialView', () => {
+        return subject().then(() => {
+          t.expect(TrackController._initialView).equals(null);
+        });
+      });
     });
   });
 
@@ -194,31 +208,23 @@ t.describe('TrackController', () => {
 
     t.beforeEach(() => {
       mockController.oninit(mockVnode);
+      mockController._watchParams = t.spy();
     });
 
-    t.context('When change params', () => {
-      t.beforeEach(() => {
-        mockController.onparamschanged = t.spy();
-      });
-
-      t.it('Call controller#onparamschanged', () => {
-        const olderParam = deepMerge({}, mockVnode.attrs['X-SERVER-PARAMS']);
-        mockVnode.attrs['X-SERVER-PARAMS'].hoge.fuga.piyo = 'NEW_PIYO';
-        const newlyParam = deepMerge({}, mockVnode.attrs['X-SERVER-PARAMS']);
-
-        subject();
-
-        t.expect(mockController.onparamschanged.callCount).equals(1);
-        t.expect(mockController.onparamschanged.args[0]).deepEquals(newlyParam);
-        t.expect(mockController.onparamschanged.args[1]).deepEquals(olderParam);
-      });
+    t.it('Call controller#_watchParams', () => {
+      subject();
+      t.expect(mockController._watchParams.callCount).equals(1);
     });
   });
 
   t.describe('#onparamschanged', () => {
-    const subject = (() => mockController.onparamschanged({new: true}, {}));
+    const subject = (() => mockController.onparamschanged(newly, older));
+    let newly = null;
+    let older = null;
 
     t.beforeEach(() => {
+      newly = {new: true};
+      older = {};
       mockController._load = t.spy(() => Promise.resolve());
     });
 
@@ -226,18 +232,29 @@ t.describe('TrackController', () => {
       subject();
       t.expect(mockController._load.callCount).equals(1);
     });
+
+    t.context('When old params is undefined', () => {
+      t.beforeEach(() => {
+        older = undefined;
+      });
+
+      t.it('Not call controller#_load', () => {
+        subject();
+        t.expect(mockController._load.callCount).equals(0);
+      });
+    });
   });
 
   t.describe('#onPopHistory', () => {
     const subject = (() => mockController.onPopHistory());
 
     t.beforeEach(() => {
-      ControllerConfig.useCache = false;
+      TrackController._historyBack = false;
     });
 
-    t.it('Set ControllerConfig.useCache', () => {
+    t.it('Set TrackController._historyBack', () => {
       subject();
-      t.expect(ControllerConfig.useCache).equals(true);
+      t.expect(TrackController._historyBack).equals(true);
     });
   });
 
@@ -245,12 +262,34 @@ t.describe('TrackController', () => {
     const subject = (() => mockController.onPushHistory());
 
     t.beforeEach(() => {
-      ControllerConfig.useCache = true;
+      TrackController._historyBack = true;
     });
 
-    t.it('Set ControllerConfig.useCache', () => {
+    t.it('Set TrackController._historyBack', () => {
       subject();
-      t.expect(ControllerConfig.useCache).equals(false);
+      t.expect(TrackController._historyBack).equals(false);
+    });
+  });
+
+  t.describe('#view', () => {
+    const subject = (() => mockController.view());
+
+    t.beforeEach(() => {
+      TrackController._initialView = undefined;
+    });
+
+    t.it('Return renderng result', () => {
+      t.expect(subject()).equals('mock');
+    });
+
+    t.context('When exist TrackController._initialView', () => {
+      t.beforeEach(() => {
+        TrackController._initialView = '<span>hoge</span>';
+      });
+
+      t.it('Return initialView', () => {
+        t.expect(subject().children).equals('<span>hoge</span>');
+      });
     });
   });
 
@@ -258,7 +297,7 @@ t.describe('TrackController', () => {
     const subject = (() => mockController._load());
 
     t.beforeEach(() => {
-      ControllerConfig.useCache = false;
+      TrackController._historyBack = false;
       mockController.onload = t.spy(() => Promise.resolve());
       mockController.onloaded = t.spy(() => Promise.resolve());
     });
@@ -283,9 +322,9 @@ t.describe('TrackController', () => {
       });
     });
 
-    t.context('When useCache is true', () => {
+    t.context('When TrackController._historyBack is true', () => {
       t.beforeEach(() => {
-        ControllerConfig.useCache = true;
+        TrackController._historyBack = true;
       });
 
       t.context('When has cache', () => {
@@ -335,6 +374,46 @@ t.describe('TrackController', () => {
             t.expect(mockController.onload.callCount).equals(1);
           });
         });
+      });
+    });
+  });
+
+  t.describe('#_watchParams', () => {
+    const subject = (() => mockController._watchParams());
+
+    t.beforeEach(() => {
+      mockController.oninit();
+      mockController.onparamschanged = t.spy();
+    });
+
+    t.context('When change params', () => {
+      t.beforeEach(() => {
+        mockVnode.attrs['X-SERVER-PARAMS'] = {a: '1'};
+        mockController.vnode.state.controller.params = {a: '0'};
+      });
+
+      t.it('Call controller#onparamschanged', () => {
+        subject();
+        t.expect(mockController.onparamschanged.callCount).equals(1);
+        t.expect(mockController.onparamschanged.args[0]).deepEquals({'a': '1'});
+        t.expect(mockController.onparamschanged.args[1]).deepEquals({a: '0'});
+      });
+
+      t.it('Store newly value', () => {
+        subject();
+        t.expect(mockController.vnode.state.controller.params).deepEquals({a: '1'});
+      });
+    });
+
+    t.context('When not change params', () => {
+      t.beforeEach(() => {
+        mockVnode.attrs['X-SERVER-PARAMS'] = {a: '0'};
+        mockController.vnode.state.controller.params = {a: '0'};
+      });
+
+      t.it('Call controller#onparamschanged', () => {
+        subject();
+        t.expect(mockController.onparamschanged.callCount).equals(0);
       });
     });
   });
