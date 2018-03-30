@@ -185,11 +185,18 @@ t.describe('TrackController', () => {
     t.context('When loaded', () => {
       t.beforeEach(() => {
         TrackController._initialView = '<span>FUGA</span>';
+        m.redraw = t.spy();
       });
 
       t.it('Clear TrackController._initialView', () => {
         return subject().then(() => {
           t.expect(TrackController._initialView).equals(null);
+        });
+      });
+
+      t.it('Call m.redraw', () => {
+        return subject().then(() => {
+          t.expect(m.redraw.callCount).equals(1);
         });
       });
     });
