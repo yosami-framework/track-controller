@@ -1,7 +1,6 @@
 require('./spec_helper');
 const m               = require('mithril');
 const t               = require('track-spec');
-const ObjectHelper    = require('track-helpers/lib/object_helper');
 const ScrollHelper    = require('track-helpers/lib/scroll_helper');
 const TrackController = require('../lib/index');
 const BrowserCache    = require('../lib/browser_cache');
@@ -38,6 +37,15 @@ t.describe('TrackController', () => {
 
   t.afterEach(() => {
     process.browser = false;
+  });
+
+  t.describe('.initialize', () => {
+    const subject = (() => TrackController.initialize({innerHTML: '<span>FUGA</span>'}));
+
+    t.it('Set TrackController._initialView', () => {
+      subject();
+      t.expect(TrackController._initialView).equals('<span>FUGA</span>');
+    });
   });
 
   t.describe('.onmatch', () => {
@@ -173,6 +181,18 @@ t.describe('TrackController', () => {
     t.it('Return promise', () => {
       t.expect(subject() instanceof Promise).equals(true);
     });
+
+    t.context('When loaded', () => {
+      t.beforeEach(() => {
+        TrackController._initialView = '<span>FUGA</span>';
+      });
+
+      t.it('Clear TrackController._initialView', () => {
+        return subject().then(() => {
+          t.expect(TrackController._initialView).equals(null);
+        });
+      });
+    });
   });
 
   t.describe('#onload', () => {
@@ -248,6 +268,28 @@ t.describe('TrackController', () => {
     t.it('Set TrackController._historyBack', () => {
       subject();
       t.expect(TrackController._historyBack).equals(false);
+    });
+  });
+
+  t.describe('#view', () => {
+    const subject = (() => mockController.view());
+
+    t.beforeEach(() => {
+      TrackController._initialView = undefined;
+    });
+
+    t.it('Return renderng result', () => {
+      t.expect(subject()).equals('mock');
+    });
+
+    t.context('When exist TrackController._initialView', () => {
+      t.beforeEach(() => {
+        TrackController._initialView = '<span>hoge</span>';
+      });
+
+      t.it('Return initialView', () => {
+        t.expect(subject().children).equals('<span>hoge</span>');
+      });
     });
   });
 
