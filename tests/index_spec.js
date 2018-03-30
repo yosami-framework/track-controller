@@ -105,7 +105,7 @@ t.describe('TrackController', () => {
     const subject = (() => mockController.views);
 
     t.it('Return views', () => {
-      t.expect(subject().length).equals(2);
+      t.expect(subject().length).equals(3);
     });
 
     t.context('When definer includes `views`', () => {
@@ -123,7 +123,7 @@ t.describe('TrackController', () => {
       });
 
       t.it('Return views', () => {
-        t.expect(subject().length).equals(1);
+        t.expect(subject().length).equals(2);
       });
     });
   });
@@ -132,7 +132,7 @@ t.describe('TrackController', () => {
     const subject = (() => mockController._cacheKey);
 
     t.beforeEach(() => {
-      global.location = {search: '?hoge'};
+      global.location = {href: 'http://localhost/'};
     });
 
     t.afterEach(() => {
@@ -140,16 +140,16 @@ t.describe('TrackController', () => {
     });
 
     t.it('Return key', () => {
-      t.expect(subject()).equals('Controllers::mock::028edbcdb0fcb5cdaf8d99814ae5a17e');
+      t.expect(subject()).equals('TrackController::294ff53a');
     });
 
-    t.context('When location.search is empty', () => {
+    t.context('When location is undefined', () => {
       t.beforeEach(() => {
-        global.location = {search: ''};
+        global.location = undefined;
       });
 
       t.it('Return key', () => {
-        t.expect(subject()).equals('Controllers::mock::');
+        t.expect(subject()).equals('TrackController::9711dca3');
       });
     });
   });
