@@ -1,9 +1,9 @@
 {
   "name": "track-controller",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Controller for track.",
   "main": "lib/index.js",
-  "repository": "alfa-jpn/track-controller.git",
+  "repository": "yosami-framework/track-controller.git",
   "scripts": {
     "linter": "eslint ./",
     "test": "ospec"
@@ -17,14 +17,14 @@
     "eslint": "^4.17.0",
     "eslint-config-google": "^0.9.1",
     "mithril": "^1.1.6",
-    "track-component": "0.0.12",
+    "track-component": "0.0.15",
     "track-config": "0.0.3",
-    "track-dsl": "0.0.3",
+    "track-dsl": "0.0.5",
     "track-eventor": "0.0.5",
     "track-helpers": "0.0.3",
-    "track-i18n": "0.0.2",
+    "track-i18n": "0.0.3",
     "track-model": "0.0.5",
-    "track-spec": "0.0.3"
+    "track-spec": "0.0.4"
   },
   "peerDependencies": {
     "track-component": "0.0.x",

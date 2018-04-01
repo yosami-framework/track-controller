@@ -2,6 +2,8 @@
 Controller for track.
 This controller is based on the Component of Mithril.js.
 
+[![Build Status](https://travis-ci.org/yosami-framework/track-controller.svg?branch=master)](https://travis-ci.org/yosami-framework/track-controller)
+
 ## Installation
 
 ### npm
