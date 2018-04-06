@@ -24,7 +24,19 @@ class HogeController extends TrackController {
 }
 ```
 
-Reference track-component.
+TrackController is usable TrackComponent interfarce.
+
+## ExceptionHandling
+
+### Raise error
+
+```javascript
+class HogeController extends TrackController {
+  loadHoge() {
+    this.raise(404, 'NotFound'); // Raise error.
+  }
+}
+```
 
 ## Lifecycle methods
 
