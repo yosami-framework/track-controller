@@ -26,6 +26,42 @@ class HogeController extends TrackController {
 
 TrackController is usable TrackComponent interfarce.
 
+## Before/After action
+
+```javascript
+const TrackController = require('track-controller');
+
+class HogeController extends TrackController {
+  static definer() {
+    name('hoge');
+    before_action('loadHoge');
+    after_action('validateHoge');
+  }
+
+  loadHoge() {
+    // Call before loading prosess.
+  }
+
+  validateHoge() {
+    // Call after  loading prosess.
+  }
+}
+```
+
+### cycile
+
+```
+[constructor]
+     |
+ [oninit]
+     |
+     | ----- [before_action] // if has cache, not call `before_actions`
+     |              |
+     | ----- [after_action]
+     |
+[oncreate]
+```
+
 ## ExceptionHandling
 
 ### Raise error
