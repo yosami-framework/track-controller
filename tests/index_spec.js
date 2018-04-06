@@ -30,6 +30,38 @@ t.describe('TrackController', () => {
        */
       static definer() {
         name('mock');
+        before_action('setHoge');
+        before_action('setPiyo');
+        after_action('setBar');
+      }
+
+      /**
+       * Mock for before_action.
+       * @return {Promise} promise.
+       */
+      setHoge() {
+        this.hoge = true;
+        return Promise.resolve();
+      }
+
+      /**
+       * Mock for before_action.
+       */
+      setPiyo() {
+        this.piyo = true;
+      }
+
+      /**
+       * Mock for after_action.
+       * @return {Promise} promise.
+       */
+      setBar() {
+        return new Promise((r) => {
+          setTimeout(() => {
+            this.bar = true;
+            r();
+          }, 100);
+        });
       }
     });
     mockController = new MockControllerClass(mockVnode);
@@ -219,6 +251,31 @@ t.describe('TrackController', () => {
 
     t.it('Return promise', () => {
       t.expect(subject() instanceof Promise).equals(true);
+    });
+
+    t.it('Call before_actions', () => {
+      t.expect(mockController.hoge).equals(undefined);
+      t.expect(mockController.piyo).equals(undefined);
+
+      return subject().then(() => {
+        t.expect(mockController.hoge).equals(true);
+        t.expect(mockController.piyo).equals(true);
+      });
+    });
+  });
+
+  t.describe('#onloaded', () => {
+    const subject = (() => mockController.onloaded());
+
+    t.it('Return promise', () => {
+      t.expect(subject() instanceof Promise).equals(true);
+    });
+
+    t.it('Call before_actions', () => {
+      t.expect(mockController.bar).equals(undefined);
+      return subject().then(() => {
+        t.expect(mockController.bar).equals(true);
+      });
     });
   });
 
