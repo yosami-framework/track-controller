@@ -69,6 +69,18 @@ t.describe('TrackController', () => {
     });
   });
 
+  t.describe('#error', () => {
+    const subject = (() => mockController.error);
+
+    t.beforeEach(() => {
+      mockController._error = {code: 500, message: 'Internal sever error'};
+    });
+
+    t.it('Return error', () => {
+      t.expect(subject()).equals(mockController._error);
+    });
+  });
+
   t.describe('#type', () => {
     const subject = (() => mockController.type);
 
@@ -240,6 +252,22 @@ t.describe('TrackController', () => {
       t.expect(mockController._load.callCount).equals(1);
     });
 
+    t.context('When controller has error', () => {
+      t.beforeEach(() => {
+        mockController._error = {code: 500, message: 'MockError'};
+        global.location = {reload: t.spy()};
+      });
+
+      t.afterEach(() => {
+        global.location = undefined;
+      });
+
+      t.it('Call global.location.reload()', () => {
+        subject();
+        t.expect(global.location.reload.callCount).equals(1);
+      });
+    });
+
     t.context('When old params is undefined', () => {
       t.beforeEach(() => {
         older = undefined;
@@ -275,6 +303,70 @@ t.describe('TrackController', () => {
     t.it('Set TrackController._historyBack', () => {
       subject();
       t.expect(TrackController._historyBack).equals(false);
+    });
+  });
+
+  t.describe('#raise', () => {
+    const subject = (() => mockController.raise(500, 'Internal Server Error'));
+
+    t.beforeEach(() => {
+      TrackController._historyBack = true;
+    });
+
+    t.afterEach(() => {
+      process.browser = false;
+    });
+
+    t.context('When browser', () => {
+      t.beforeEach(() => {
+        process.browser = true;
+        m.redraw = t.spy(m.redraw);
+        mockController.vnode.state._views = [];
+        mockController._viewNames = ['layouts/hoge', 'foos/bar'];
+      });
+
+      t.it('Set error', () => {
+        subject();
+        t.expect(mockController.error).deepEquals({
+          code:    500,
+          message: 'Internal Server Error',
+        });
+      });
+
+      t.it('Clear view cache', () => {
+        subject();
+        t.expect(mockController.vnode.state._views).equals(null);
+      });
+
+      t.it('Set error view', () => {
+        subject();
+        t.expect(mockController._viewNames).deepEquals(['layouts/hoge', 'errors/error']);
+      });
+
+      t.it('Call redraw error view', () => {
+        subject();
+        t.expect(m.redraw.callCount).equals(1);
+      });
+    });
+
+    t.context('When not browser', () => {
+      t.beforeEach(() => {
+        process.browser = false;
+      });
+
+      t.it('Throw error', () => {
+        let error = null;
+
+        try {
+          subject();
+        } catch (e) {
+          error = e;
+        }
+
+        t.expect(error).notEquals(null);
+        t.expect(error.code).equals(500);
+        t.expect(error.message).equals('Internal Server Error');
+      });
     });
   });
 
