@@ -76,13 +76,6 @@ t.describe('TrackController', () => {
     process.browser = false;
   });
 
-  t.describe('.constructor', () => {
-    t.it('Set pipe.i18n', () => {
-      t.expect(mockController.pipe.i18n instanceof TrackI18n).equals(true);
-      t.expect(mockController.pipe.i18n._namespace).equals('en');
-    });
-  });
-
   t.describe('.initialize', () => {
     const subject = (() => TrackController.initialize({innerHTML: '<span>FUGA</span>'}));
 
@@ -242,6 +235,12 @@ t.describe('TrackController', () => {
     t.it('Call controller#_watchParams', () => {
       subject();
       t.expect(mockController._watchParams.callCount).equals(1);
+    });
+
+    t.it('Set pipe.i18n', () => {
+      subject();
+      t.expect(mockController.pipe.i18n instanceof TrackI18n).equals(true);
+      t.expect(mockController.pipe.i18n._namespace).equals('en');
     });
 
     t.it('Return promise', () => {
