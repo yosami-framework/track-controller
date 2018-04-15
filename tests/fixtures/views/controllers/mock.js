@@ -1,3 +1,3 @@
-module.exports = function(controller, pipe, _yield) {
-  return 'mock';
+module.exports = function($, controller, pipe, _yield) {
+  return $('div', 'mock');
 };

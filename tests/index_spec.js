@@ -1,6 +1,7 @@
 require('./spec_helper');
 const m               = require('mithril');
 const t               = require('track-spec');
+const TrackI18n       = require('track-i18n');
 const ScrollHelper    = require('track-helpers/lib/scroll_helper');
 const TrackController = require('../lib/index');
 const BrowserCache    = require('../lib/browser_cache');
@@ -11,6 +12,8 @@ t.describe('TrackController', () => {
   let mockVnode           = null;
 
   t.beforeEach(() => {
+    global.location = {href: 'http://localhost/'};
+
     mockVnode = {
       state: {},
       attrs: {
@@ -21,6 +24,7 @@ t.describe('TrackController', () => {
             },
           },
         },
+        'X-SERVER-URL': 'http://localhost:888/',
       },
     };
 
@@ -68,7 +72,15 @@ t.describe('TrackController', () => {
   });
 
   t.afterEach(() => {
+    global.location = undefined;
     process.browser = false;
+  });
+
+  t.describe('.constructor', () => {
+    t.it('Set pipe.i18n', () => {
+      t.expect(mockController.pipe.i18n instanceof TrackI18n).equals(true);
+      t.expect(mockController.pipe.i18n._namespace).equals('en');
+    });
   });
 
   t.describe('.initialize', () => {
@@ -113,14 +125,6 @@ t.describe('TrackController', () => {
     });
   });
 
-  t.describe('#type', () => {
-    const subject = (() => mockController.type);
-
-    t.it('Return type', () => {
-      t.expect(subject()).equals('controller');
-    });
-  });
-
   t.describe('#params', () => {
     const subject = (() => mockController.params);
     let mockParams = null;
@@ -147,6 +151,32 @@ t.describe('TrackController', () => {
 
       t.it('Return param', () => {
         t.expect(subject()).equals(mockVnode.attrs['X-SERVER-PARAMS']);
+      });
+    });
+  });
+
+  t.describe('#type', () => {
+    const subject = (() => mockController.type);
+
+    t.it('Return type', () => {
+      t.expect(subject()).equals('controller');
+    });
+  });
+
+  t.describe('#url', () => {
+    const subject = (() => mockController.url);
+
+    t.it('Return url', () => {
+      t.expect(subject()).equals('http://localhost:888/');
+    });
+
+    t.context('When use browser', () => {
+      t.beforeEach(() => {
+        process.browser = true;
+      });
+
+      t.it('Return url', () => {
+        t.expect(subject()).equals('http://localhost/');
       });
     });
   });
@@ -180,14 +210,6 @@ t.describe('TrackController', () => {
 
   t.describe('#_cacheKey', () => {
     const subject = (() => mockController._cacheKey);
-
-    t.beforeEach(() => {
-      global.location = {href: 'http://localhost/'};
-    });
-
-    t.afterEach(() => {
-      global.location = undefined;
-    });
 
     t.it('Return key', () => {
       t.expect(subject()).equals('TrackController::294ff53a');
@@ -312,11 +334,7 @@ t.describe('TrackController', () => {
     t.context('When controller has error', () => {
       t.beforeEach(() => {
         mockController._error = {code: 500, message: 'MockError'};
-        global.location = {reload: t.spy()};
-      });
-
-      t.afterEach(() => {
-        global.location = undefined;
+        global.location.reload = t.spy();
       });
 
       t.it('Call global.location.reload()', () => {
@@ -435,7 +453,7 @@ t.describe('TrackController', () => {
     });
 
     t.it('Return renderng result', () => {
-      t.expect(subject()).equals('mock');
+      t.expect(subject().tag).equals('div');
     });
 
     t.context('When exist TrackController._initialView', () => {
