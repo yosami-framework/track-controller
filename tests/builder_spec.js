@@ -6,8 +6,6 @@ t.describe('Builder', () => {
   let mock = null;
 
   t.beforeEach(() => {
-    process.browser = true;
-
     mock = new (class extends TrackController {
       /**
        * Definitions of component.
@@ -25,11 +23,7 @@ t.describe('Builder', () => {
        * Mock.
        */
       hoge() { }
-    })();
-  });
-
-  t.afterEach(() => {
-    process.browser = false;
+    })({attrs: {}});
   });
 
   t.describe('#after_action', () => {

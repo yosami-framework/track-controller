@@ -9,4 +9,5 @@ global.requestAnimationFrame = function(func) {
 
 TrackConfig.configure((c) => {
   c.loader = ((module) => require(`./fixtures/${module}`));
+  c.localeSelector = ((url) => 'en');
 });
